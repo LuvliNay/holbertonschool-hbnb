@@ -1,0 +1,39 @@
+%% Sequence Diagram – Review Submission API Call (Task 2_2 Alternative Style)
+
+sequenceDiagram
+    title: Review Submission – API Interaction Flow
+
+%% These are the participants
+    participant Client as User
+    participant API as Presentation Layer (Review API)
+    participant Logic as Business Logic Layer (Review Service)
+    participant DB as Persistence Layer (Database)
+
+%% User submits a new review
+    Client->>API: POST /api/reviews\n{place_id, rating, comment}
+    note right of Client: User sends review data<br>for a specific place
+
+%% API authenticates the user and validates input
+    API->>Logic: authenticateUser(token)
+    Logic-->>API: Authentication Successful
+    note right of Logic: Confirms user identity<br>before processing
+
+%% API requests business logic to verify the target place
+    API->>Logic: verifyPlaceExists(place_id)
+    Logic->>DB: SELECT * FROM places WHERE id = place_id
+    DB-->>Logic: Place Found
+    Logic-->>API: Place Verified
+    note right of Logic: Ensures place exists<br>before linking the review
+
+%% Business Logic creates a new Review entity
+    API->>Logic: createReview(user_id, place_id, rating, comment)
+    Logic->>DB: INSERT INTO reviews(place_id, user_id, rating, comment, created_at)
+    DB-->>Logic: Review Created (review_id)
+    note right of DB: Persists review record<br>and returns its ID
+
+%% Logic returns success response to the API
+    Logic-->>API: Review Created (review_id, timestamp)
+
+%% API sends final confirmation to the user
+    API-->>Client: HTTP 201 Created\n{review_id, place_id, rating, comment}
+    note over Client,API: Client receives confirmation<br>of successful review submission
