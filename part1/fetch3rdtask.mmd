@@ -1,0 +1,31 @@
+%% Sequence Diagram – Fetching a List of Places API Call (Task 2_2 Style)
+
+sequenceDiagram
+    title: Fetching a List of Places – API Interaction Flow
+
+%% These are the participants
+    participant Client as User
+    participant API as Presentation Layer (Place API)
+    participant Logic as Business Logic Layer (Place Service)
+    participant DB as Persistence Layer (Database)
+
+%% User requests a list of places with filters
+    Client->>API: GET /api/places?city=Paris&max_price=200
+    note right of Client: User specifies optional<br>filters for location and price
+
+%% API forwards request to the Business Logic layer
+    API->>Logic: getPlaces(filters)
+    note right of Logic: Applies filtering rules<br>and prepares DB query
+
+%% Business Logic queries the Database
+    Logic->>DB: SELECT * FROM places\nWHERE city='Paris' AND price<=200
+    DB-->>Logic: List of matching places
+    note right of DB: Returns all records<br>matching the filter criteria
+
+%% Business Logic formats the result
+    Logic-->>API: placesList (with metadata)
+    note right of Logic: Converts data into<br>structured JSON-friendly format
+
+%% API returns response to the user
+    API-->>Client: HTTP 200 OK\n[{place_id, name, city, price, ...}]
+    note over Client,API: Client receives filtered<br>list of available places
