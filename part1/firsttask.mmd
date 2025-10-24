@@ -1,0 +1,35 @@
+%%This is a diagram for task 0
+
+%%graph td high level diagram with layered architecture and facade pattern usage
+
+%%graph td diagram
+%%configure theme using mermaid
+---
+config:
+  theme: mc
+---
+%%presentation layer, business logic layer and persistance layer with its contents
+graph TD
+A["Presentation Layer <<Interface>>ServiceAPI handleRequest()"]
+B["Business Logic Layer +User+Place+Review+Amenity+processRequest()"]
+C["Persistence Layer+DatabaseAccess+executeQuery()"]
+%%these are the relationships for the diagram layers
+A -->|"Facade Pattern"| B
+B -->|"Database Operations"| C
+%%These below are the titles or heading for the layer boxes
+subgraph Layer_1 ["Presentation Layer"]
+    A
+end
+subgraph Layer_2 ["Business Logic Layer"]
+    B
+end
+subgraph Layer_3 ["Persistence Layer"]
+    C
+end
+%%Appearance and hex colors for the diagram using mermaid
+classDef presentation fill:#ffddcc,stroke:#333,stroke-width:1px
+classDef business fill:#ccffcc,stroke:#333,stroke-width:1px
+classDef persistence fill:#ccccff,stroke:#333,stroke-width:1px
+class A presentation
+class B business
+class C persistence
