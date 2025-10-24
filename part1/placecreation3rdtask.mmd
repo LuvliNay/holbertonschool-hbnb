@@ -1,0 +1,36 @@
+%% Sequence Diagram – Place Creation API Call (Alternative Layout)
+
+sequenceDiagram
+    title: Place Creation – API Interaction Flow
+
+    %% Participants
+    participant Client as User
+    participant API as Presentation Layer (Place API)
+    participant Logic as Business Logic Layer (Place Service)
+    participant DB as Persistence Layer (Database)
+
+    %% Step 1: User initiates a request to create a new Place
+    Client->>API: POST /api/places\n{name, city, price, amenities}
+    note right of Client: User provides input<br>to create a listing
+
+    %% Step 2: API performs basic input validation
+    API->>Logic: validatePlaceData(name, city, price)
+    Logic-->>API: Validation Passed
+    note right of Logic: Checks for missing or invalid fields
+
+    %% Step 3: API requests the Business Logic layer to create the Place
+    API->>Logic: createPlace(user_id, name, city, price, amenities)
+    note right of Logic: Applies business rules<br>and prepares data model
+
+    %% Step 4: Business Logic interacts with the Database
+    Logic->>DB: INSERT INTO places(name, city, price, user_id, created_at)
+    DB-->>Logic: Record Created (place_id)
+    note right of DB: Stores new place record<br>and returns ID
+
+    %% Step 5: Business Logic returns result to API
+    Logic-->>API: Place Created (place_id, timestamp)
+    note right of Logic: Returns metadata to the API layer
+
+    %% Step 6: API responds to the client
+    API-->>Client: HTTP 201 Created\n{place_id, name, city, price}
+    note over Client,API: Client receives confirmation<br>of successful place creation
