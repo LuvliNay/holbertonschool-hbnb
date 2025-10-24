@@ -1,0 +1,1 @@
+This is the initial commit for this directory where you will see progress of a simplified version of Airbnb.
