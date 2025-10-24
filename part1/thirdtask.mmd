@@ -1,0 +1,34 @@
+%% Hbnb project
+%% Sequence Diagram – Alternative Style for Place Creation Flow (Task 2_2)
+
+sequenceDiagram
+autonumber
+
+%% Participants (reordered vertically)
+participant U as Client / User
+participant P as Presentation Layer (API)
+participant B as Business Logic Layer (Place Model)
+participant D as Persistence Layer (Database)
+
+%% User sends place creation request
+U->>P: POST /places {name, location, price, amenities}
+note right of P: Receives request<br>Validates required fields
+
+%% API requests data validation from Business Logic
+P->>B: validatePlaceData(name, location, price)
+B-->>P: Validation OK
+note right of B: Ensures input meets<br>business rules & formats
+
+%% API triggers place creation
+P->>B: createPlace(user_id, name, location, price, amenities)
+note right of B: Creates Place object<br>and prepares for DB insert
+
+%% Business Logic stores data
+B->>D: INSERT INTO places(name, location, price, user_id, created_at)
+D-->>B: Place Created
+note right of D: Records new place<br>and timestamps entry
+
+%% Response propagation
+B-->>P: Return Success (place_id, metadata)
+P-->>U: HTTP 201 Created {place_id, name, location, price}
+note over U,P: Client receives confirmation<br>of successful place creation
