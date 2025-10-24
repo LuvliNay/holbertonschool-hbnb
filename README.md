@@ -1,0 +1,1 @@
+This repository will contain information and diagrams of the HBnB project.
