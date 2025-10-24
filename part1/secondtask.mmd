@@ -1,0 +1,75 @@
+%%Hbnb project - Business Logic Class Diagram
+%%setting the theme for my diagram to neo scheme
+---
+config:
+  theme: neo
+---
+
+%%----------------
+%% USER CLASS
+%%----------------
+classDiagram
+direction TB
+class User {
+    +uuid4 id
+    +string email
+    +string password
+    +string first_name
+    +string last_name
+    +datetime created_at
+    +datetime updated_at
+    +authenticate(password: string) bool
+    +update_profile(first_name: string, last_name: string)
+    +delete_account()
+}
+%%This represents system users who can list places and write reviews.
+%%----------------
+%% PLACE CLASS
+%%----------------
+class Place {
+    +uuid4 id
+    +string name
+    +string description
+    +string city
+    +string address
+    +float price_per_night
+    +int max_guests
+    +uuid4 host_id
+    +datetime created_at
+    +datetime updated_at
+    +add_review(review: Review)
+    +add_amenity(amenity: Amenity)
+    +calculate_average_rating() float
+}
+%%This represents the rental properties owned by the users
+%%----------------
+%% REVIEW CLASS
+%%----------------
+class Review {
+    +uuid4 id
+    +uuid4 user_id
+    +uuid4 place_id
+    +int rating
+    +string comment
+    +datetime created_at
+    +datetime updated_at
+    +edit_review(comment: string, rating: int)
+    +delete_review()
+}
+%%This represents the feedback given from users on the places.
+%%---------------
+%% AMENITY CLASS
+%%---------------
+class Amenity {
+    +uuid4 id
+    +string name
+    +string description
+    +datetime created_at
+    +datetime updated_at
+    +update_description(description: string)
+}
+%%These are the features linked to the places.
+User "1" --> "many" Place : owns
+User "1" --> "many" Review : writes
+Place "1" --> "many" Review : receives
+Place "many" --> "many" Amenity : includes
